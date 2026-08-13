@@ -1,34 +1,49 @@
-class Robot:
+import pigpio
+import time
+LEFT_SERVO = 12
+RIGHT_SERVO = 13
+LEFT_STOP = 1500
+RIGHT_STOP = 1500
+SPEED = 250
+pi = pigpio.pi()
+if not pi.connected:
+    raise RuntimeError("Could not connect to pigpio")
 
+def set_servos(left, right):
+    left = max(1000, min(2000, left))
+    right = max(1000, min(2000, right))
 
-    def move(self, command):
+    pi.set_servo_pulsewidth(LEFT_SERVO, left)
+    pi.set_servo_pulsewidth(RIGHT_SERVO, right)
 
-        if command["forward"]:
-            print("Drive forward")
+def stop():
+    set_servos(LEFT_STOP, RIGHT_STOP)
 
-        elif command["backward"]:
-            print("Drive backward")
+def forward():
+    set_servos(
+        LEFT_STOP + SPEED,
+        RIGHT_STOP - SPEED
+    )
 
-        elif command["left"]:
-            print("Turn left")
+def backward():
+    set_servos(
+        LEFT_STOP - SPEED,
+        RIGHT_STOP + SPEED
+    )
 
-        elif command["right"]:
-            print("Turn right")
+def left_turn():
+    set_servos(
+        LEFT_STOP - SPEED,
+        RIGHT_STOP - SPEED
+    )
 
-        else:
-            print("Drive stop")
+def right_turn():
+    set_servos(
+        LEFT_STOP + SPEED,
+        RIGHT_STOP + SPEED
+    )
 
-
-    def camera(self, command):
-
-        if command["camera_up"]:
-            print("Camera tilt up")
-
-        elif command["camera_down"]:
-            print("Camera tilt down")
-
-        else:
-            print("Camera stop")
-
-
-robot = Robot()
+def cleanup():
+    stop()
+    time.sleep(0.2)
+    pi.stop()
