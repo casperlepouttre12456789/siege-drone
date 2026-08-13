@@ -1,41 +1,144 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
 
-<title>Siege Scout Drone</title>
+    <meta charset="UTF-8">
 
-<link rel="stylesheet" href="/static/style.css">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Recon Drone</title>
+
+    <style>
+
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #camera {
+            width: min(90vw, 640px);
+            border: 3px solid #444;
+            border-radius: 10px;
+        }
+
+        .controls {
+            margin-top: 25px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .key {
+            width: 70px;
+            height: 70px;
+
+            margin: 5px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #333;
+
+            border: 2px solid #666;
+            border-radius: 10px;
+
+            font-size: 28px;
+            font-weight: bold;
+
+            user-select: none;
+        }
+
+        .key.active {
+            background: #777;
+            border-color: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+    </style>
 
 </head>
 
 
 <body>
 
+    <h1>RECON DRONE</h1>
 
-<h1>Siege Scout Drone</h1>
+    <img
+        id="camera"
+        src="/camera"
+    >
+
+    <div class="controls">
+
+        <div class="row">
+
+            <div
+                class="key"
+                id="w"
+            >
+                W
+            </div>
+
+        </div>
 
 
-<div id="camera">
+        <div class="row">
 
-<img src="/video">
+            <div
+                class="key"
+                id="a"
+            >
+                A
+            </div>
 
-</div>
+            <div
+                class="key"
+                id="s"
+            >
+                S
+            </div>
+
+            <div
+                class="key"
+                id="d"
+            >
+                D
+            </div>
+
+        </div>
+
+    </div>
 
 
-<h2>
-W A S D = Drive
-</h2>
+    <div id="status">
+        STOPPED
+    </div>
 
 
-<p>
-Arrow keys = Camera
-</p>
+    <script
+        src="https://cdn.socket.io/4.7.5/socket.io.min.js">
+    </script>
 
-
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<script src="/static/script.js"></script>
+    <script src="/static/scripts.js"></script>
 
 </body>
 
