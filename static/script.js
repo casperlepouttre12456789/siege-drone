@@ -1,23 +1,141 @@
-console.log("SCRIPT LOADED");
+const socket = io();
 
-// Force WebSockets only, bypassing HTTP long-polling limits
-const socket = io({
-    transports: ["websocket"]
-});
+const keys = {
+    w: false,
+    a: false,
+    s: false,
+    d: false
+};
 
-socket.on("connect", () => {
-    console.log("CONNECTED TO SERVER! Socket ID:", socket.id);
-});
 
-socket.on("connect_error", (err) => {
-    console.error("Socket Connection Error:", err);
-});
+function sendCommand(key, pressed) {
 
-// Capture keydown events
-document.addEventListener("keydown", (event) => {
-    console.log("KEY PRESSED:", event.key);
-    
-    socket.emit("control", {
-        key: event.key
+    socket.emit("command", {
+        key: key,
+        pressed: pressed
     });
-});
+
+}
+
+
+function stopRobot() {
+
+    keys.w = false;
+    keys.a = false;
+    keys.s = false;
+    keys.d = false;
+
+    document.querySelectorAll(".key").forEach(
+        function(element) {
+            element.classList.remove("active");
+        }
+    );
+
+    socket.emit("stop");
+
+    document.getElementById("status").innerText =
+        "STOPPED";
+}
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        const key = event.key.toLowerCase();
+
+        if (!keys.hasOwnProperty(key)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        // Ignore browser auto-repeat
+        if (keys[key]) {
+            return;
+        }
+
+        keys[key] = true;
+
+        document
+            .getElementById(key)
+            .classList.add("active");
+
+        document.getElementById("status").innerText =
+            "MOVING: " + key.toUpperCase();
+
+        sendCommand(key, true);
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    function(event) {
+
+        const key = event.key.toLowerCase();
+
+        if (!keys.hasOwnProperty(key)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        keys[key] = false;
+
+        document
+            .getElementById(key)
+            .classList.remove("active");
+
+        sendCommand(key, false);
+
+        // If no keys are being held, make absolutely
+        // sure the motors stop.
+        if (
+            !keys.w &&
+            !keys.a &&
+            !keys.s &&
+            !keys.d
+        ) {
+
+            socket.emit("stop");
+
+            document.getElementById("status").innerText =
+                "STOPPED";
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "blur",
+    function() {
+
+        stopRobot();
+
+    }
+);
+
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (document.hidden) {
+            stopRobot();
+        }
+
+    }
+);
+
+
+socket.on(
+    "disconnect",
+    function() {
+
+        stopRobot();
+
+        document.getElementById("status").innerText =
+            "CONNECTION LOST - STOPPED";
+    }
+);
