@@ -1,5 +1,6 @@
 A siege recon drone that uses a pi3a+ and a usbA camera and 2 360° servos and a power bank to do everything.
 (no I haven't found a way to make it jump without using explosives)
+<img src="blob:chrome-untrusted://media-app/5630590d-6904-46b3-ba16-cf829bde0f51" alt="1000034443.jpg"/>![Uploading image.png…]()
 
 tutorial:
 connect everything to the pi as listed below wiring and attach the pi to the power bank and
